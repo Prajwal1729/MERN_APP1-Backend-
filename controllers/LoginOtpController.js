@@ -1,6 +1,7 @@
 import Users from "../models/Users.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../utils/sendEmail.js";
 
 export const sendOTP = async (req,res) => {
     try{
@@ -27,7 +28,13 @@ export const sendOTP = async (req,res) => {
         user.otpExpiry = otpExpiry;
         await user.save();
 
-        console.log("OTP: ",otp);
+        //console.log("OTP: ",otp);
+
+        await sendEmail(
+           email,
+          "Your OTP - LifePilot AI",
+          `Your OTP is: ${otp}. It expires in 1 minute.`
+        );
 
         return res.status(200).json({
             message: "OTP sent successfully",
